@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-    origin: "*",
+    origin: "https://saas-platform-alpha.vercel.app",
     credentials: true
 }));
 app.use('/api/users', userRoutes);
