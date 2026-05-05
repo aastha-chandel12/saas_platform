@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../../services/api';
-import { MessageSquare, Users, TrendingUp, CheckCircle2, Clock, Activity } from 'lucide-react';
+import { MessageSquare, Users, Clock, Activity } from 'lucide-react';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import { motion } from 'framer-motion';
 
