@@ -69,7 +69,7 @@ const RequestManagement = () => {
     }
   };
 
-  const filteredRequests = requests.filter(req => 
+  const filteredRequests = requests.filter(req =>
     req.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     req.serviceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
     req._id.includes(searchTerm)
@@ -87,8 +87,8 @@ const RequestManagement = () => {
             </div>
             <div className="relative w-full md:w-80">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-              <input 
-                type="text" 
+              <input
+                type="text"
                 placeholder="Search requests..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -116,12 +116,12 @@ const RequestManagement = () => {
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">#{request._id.slice(-6)}</span>
                     </div>
                     <div className="flex flex-wrap gap-x-6 gap-y-2">
-                       <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-                          <Tag size={14} className="text-slate-300" /> {request.serviceType}
-                       </div>
-                       <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-                          <Calendar size={14} className="text-slate-300" /> Updated: {new Date(request.createdAt).toLocaleDateString()}
-                       </div>
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                        <Tag size={14} className="text-slate-300" /> {request.serviceType}
+                      </div>
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                        <Calendar size={14} className="text-slate-300" /> Updated: {new Date(request.createdAt).toLocaleDateString()}
+                      </div>
                     </div>
                     <p className="text-slate-500 text-sm mt-3 line-clamp-1 max-w-xl">{request.description}</p>
                   </div>
@@ -147,16 +147,8 @@ const RequestManagement = () => {
                       <Loader2 size={16} /> Start Work
                     </button>
                   )}
-                  
-                  <button
-                    onClick={() => { 
-                      setSelectedRequest(request); 
-                      setNotes(request.adminNotes || ''); 
-                    }}
-                    className="w-full sm:w-auto px-6 py-2 bg-slate-50 text-slate-600 hover:bg-slate-900 hover:text-white rounded-xl font-bold text-sm transition-all border border-slate-100"
-                  >
-                    Details
-                  </button>
+
+
                 </div>
               </motion.div>
             ))}
@@ -193,11 +185,11 @@ const RequestManagement = () => {
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">User</label>
-                  <p className="font-bold text-slate-800 flex items-center gap-2"><User size={14} className="text-indigo-500"/> {selectedRequest.userName}</p>
+                  <p className="font-bold text-slate-800 flex items-center gap-2"><User size={14} className="text-indigo-500" /> {selectedRequest.userName}</p>
                 </div>
                 <div>
                   <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Email</label>
-                  <p className="font-bold text-slate-800 flex items-center gap-2"><Mail size={14} className="text-indigo-500"/> {selectedRequest.userEmail}</p>
+                  <p className="font-bold text-slate-800 flex items-center gap-2"><Mail size={14} className="text-indigo-500" /> {selectedRequest.userEmail}</p>
                 </div>
               </div>
 
