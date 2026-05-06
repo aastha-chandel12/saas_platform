@@ -12,7 +12,7 @@ const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 40000) {
+    if (error.response?.status === 401) {
       localStorage.removeItem('userInfo');
       window.location.href = '/login';
     }

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { motion } from 'framer-motion';
-import { Search, Save, X, Loader2, CheckCircle2 } from 'lucide-react';
+import { Search, Save, X, Loader2, CheckCircle2, User, Mail, Calendar } from 'lucide-react';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import { toast } from '../../hooks/useToast';
+import StatusDropdown from '../../components/admin/StatusDropdown';
 
 interface Request {
   _id: string;
@@ -17,15 +18,13 @@ interface Request {
   createdAt: string;
 }
 
-const steps = ['Request Submitted', 'Work Started', 'Under Review', 'Completed'];
-
 const RequestManagement = () => {
   const [requests, setRequests] = useState<Request[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
   const [updating, setUpdating] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const [updateStatus, setUpdateStatus] = useState('');
   const [notes, setNotes] = useState('');
 
   const fetchRequests = async () => {
@@ -43,16 +42,24 @@ const RequestManagement = () => {
     fetchRequests();
   }, []);
 
-  const handleUpdate = async () => {
+  const handleUpdateStatus = async (id: string, newStatus: string) => {
+    try {
+      await api.put(`/api/requests/${id}`, { status: newStatus });
+      toast('Status updated successfully', 'success');
+      fetchRequests();
+    } catch (err) {
+      toast('Failed to update status', 'error');
+    }
+  };
+
+  const handleFullUpdate = async () => {
     if (!selectedRequest) return;
     setUpdating(true);
-
     try {
       await api.put(`/api/requests/${selectedRequest._id}`, {
-        status: updateStatus,
         adminNotes: notes
       });
-      toast('Ticket updated successfully', 'success');
+      toast('Notes updated successfully', 'success');
       setSelectedRequest(null);
       fetchRequests();
     } catch (err) {
@@ -62,15 +69,11 @@ const RequestManagement = () => {
     }
   };
 
-  const getStatusStyle = (status: string) => {
-    switch (status) {
-      case 'Request Submitted': return 'bg-slate-50 text-slate-600 border-slate-100';
-      case 'Work Started': return 'bg-indigo-50 text-indigo-600 border-indigo-100';
-      case 'Under Review': return 'bg-amber-50 text-amber-600 border-amber-100';
-      case 'Completed': return 'bg-emerald-50 text-emerald-600 border-emerald-100';
-      default: return 'bg-slate-50 text-slate-600 border-slate-100';
-    }
-  };
+  const filteredRequests = requests.filter(req => 
+    req.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    req.serviceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    req._id.includes(searchTerm)
+  );
 
   return (
     <div className="flex bg-slate-50 min-h-screen">
@@ -79,157 +82,137 @@ const RequestManagement = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10">
             <div>
-              <h1 className="text-3xl font-bold text-slate-800 mb-2 tracking-tight">Service Requests</h1>
-              <p className="text-slate-500 font-medium">Manage and process incoming service tickets.</p>
+              <h1 className="text-3xl font-bold text-slate-800 mb-2 tracking-tight">Manage Requests</h1>
+              <p className="text-slate-500 font-medium">Simplify your workflow with the new 3-stage tracking system.</p>
             </div>
-
+            <div className="relative w-full md:w-80">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <input 
+                type="text" 
+                placeholder="Search requests..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all shadow-sm"
+              />
+            </div>
           </div>
 
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-md overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="bg-slate-50/50 border-b border-slate-100">
-                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">User</th>
-                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Service</th>
-                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Status</th>
-                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Deadline</th>
-                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {requests.map((request) => (
-                    <tr key={request._id} className="hover:bg-slate-50/30 transition-colors group">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs">
-                            {request.userName?.charAt(0)}
-                          </div>
-                          <div>
-                            <div className="text-sm font-bold text-slate-800">{request.userName}</div>
-                            <div className="text-[10px] text-slate-400">{request.userEmail}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-bold text-slate-700">{request.serviceType}</div>
-                        <div className="text-[10px] text-slate-400 line-clamp-1 max-w-[200px]">{request.description}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border ${getStatusStyle(request.status)}`}>
-                          {request.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-bold text-slate-700">{new Date(request.deadline).toLocaleDateString()}</div>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <button
-                          onClick={() => { setSelectedRequest(request); setUpdateStatus(request.status); setNotes(request.adminNotes || ''); }}
-                          className="px-4 py-2 bg-slate-50 text-slate-600 hover:bg-indigo-600 hover:text-white rounded-lg font-bold text-xs transition-all active:scale-95 border border-slate-100 group-hover:border-indigo-200"
-                        >
-                          Manage
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            {requests.length === 0 && !loading && (
-              <div className="py-32 flex flex-col items-center justify-center text-center">
+          <div className="grid grid-cols-1 gap-4">
+            {filteredRequests.map((request) => (
+              <motion.div
+                key={request._id}
+                layout
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:shadow-md transition-all group"
+              >
+                <div className="flex items-start gap-4 flex-1">
+                  <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg flex-shrink-0">
+                    {request.userName?.charAt(0)}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-bold text-slate-800">{request.userName}</h3>
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">#{request._id.slice(-6)}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-x-6 gap-y-2">
+                       <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                          <Tag size={14} className="text-slate-300" /> {request.serviceType}
+                       </div>
+                       <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                          <Calendar size={14} className="text-slate-300" /> Updated: {new Date(request.createdAt).toLocaleDateString()}
+                       </div>
+                    </div>
+                    <p className="text-slate-500 text-sm mt-3 line-clamp-1 max-w-xl">{request.description}</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-center gap-4 border-t lg:border-t-0 pt-4 lg:pt-0">
+                  <StatusDropdown 
+                    currentStatus={request.status === 'Request Submitted' ? 'Requested' : (['Work Started', 'Under Review'].includes(request.status) ? 'In Progress' : request.status)} 
+                    onStatusChange={(status) => handleUpdateStatus(request._id, status)} 
+                  />
+                  <button
+                    onClick={() => { 
+                      setSelectedRequest(request); 
+                      setNotes(request.adminNotes || ''); 
+                    }}
+                    className="w-full sm:w-auto px-6 py-2 bg-slate-50 text-slate-600 hover:bg-slate-900 hover:text-white rounded-xl font-bold text-sm transition-all border border-slate-100"
+                  >
+                    Details
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+
+            {filteredRequests.length === 0 && !loading && (
+              <div className="py-24 flex flex-col items-center justify-center text-center">
                 <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-4">
                   <CheckCircle2 size={32} />
                 </div>
-                <h3 className="text-slate-800 font-bold mb-1">No service requests</h3>
-                <p className="text-slate-400 text-sm font-medium">New tickets will appear here once users submit them.</p>
+                <h3 className="text-slate-800 font-bold mb-1">No requests found</h3>
+                <p className="text-slate-400 text-sm font-medium">Try adjusting your search criteria.</p>
               </div>
             )}
           </div>
         </div>
       </main>
 
-      {/* Update Modal */}
+      {/* Details Modal (for Admin Notes) */}
       {selectedRequest && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl border border-slate-100"
+            className="bg-white rounded-3xl w-full max-w-xl overflow-hidden shadow-2xl"
           >
-            <div className="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
-              <div>
-                <h2 className="text-xl font-bold text-slate-800">Update Management</h2>
-                <p className="text-xs text-slate-400 font-medium">#{selectedRequest._id}</p>
-              </div>
-              <button onClick={() => setSelectedRequest(null)} className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-all">
+            <div className="p-6 border-b border-slate-50 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-slate-800">Request Details</h2>
+              <button onClick={() => setSelectedRequest(null)} className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-50 transition-all">
                 <X size={20} />
               </button>
             </div>
 
-            <div className="p-8">
-              <div className="mb-10">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-6">Service Timeline Workflow</label>
-                <div className="relative">
-                  <div className="absolute top-4 left-0 w-full h-0.5 bg-slate-100" />
-                  <div className="relative flex justify-between">
-                    {steps.map((step, idx) => {
-                      const currentStepIdx = steps.indexOf(selectedRequest.status);
-                      const isNext = idx === currentStepIdx + 1;
-                      const isCompleted = idx < currentStepIdx;
-                      const isClickable = step === selectedRequest.status || isNext;
-
-                      return (
-                        <button
-                          key={step}
-                          type="button"
-                          disabled={!isClickable}
-                          onClick={() => setUpdateStatus(step)}
-                          className={`group flex flex-col items-center gap-3 relative z-10 outline-none transition-all ${!isClickable ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
-                        >
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all border-2 ${updateStatus === step
-                              ? 'bg-indigo-600 border-indigo-600 text-white shadow-md'
-                              : isCompleted
-                                ? 'bg-emerald-500 border-emerald-500 text-white'
-                                : 'bg-white border-slate-200 text-slate-300 group-hover:border-indigo-400'
-                            }`}>
-                            {isCompleted ? <CheckCircle2 size={16} /> : <span className="text-[10px] font-bold">{idx + 1}</span>}
-                          </div>
-                          <span className={`text-[10px] font-bold uppercase tracking-wider ${updateStatus === step ? 'text-indigo-600' : 'text-slate-400'}`}>
-                            {step}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
+            <div className="p-8 space-y-6">
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">User</label>
+                  <p className="font-bold text-slate-800 flex items-center gap-2"><User size={14} className="text-indigo-500"/> {selectedRequest.userName}</p>
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Email</label>
+                  <p className="font-bold text-slate-800 flex items-center gap-2"><Mail size={14} className="text-indigo-500"/> {selectedRequest.userEmail}</p>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Admin Notes</label>
-                  <textarea
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-medium text-slate-700 min-h-[100px] text-sm"
-                    placeholder="Add progress details, next steps, or internal notes..."
-                  />
-                </div>
+              <div>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Description</label>
+                <p className="text-slate-600 text-sm leading-relaxed">{selectedRequest.description}</p>
+              </div>
 
-                <div className="flex gap-3 pt-2">
-                  <button
-                    onClick={() => setSelectedRequest(null)}
-                    className="flex-1 py-3 bg-slate-50 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-100 transition-all active:scale-95"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleUpdate}
-                    className="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
-                  >
-                    {updating ? <Loader2 className="animate-spin" size={18} /> : <><Save size={18} /> Update Status</>}
-                  </button>
-                </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1 ml-1">Admin Feedback / Notes</label>
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-medium text-slate-700 min-h-[150px] text-sm"
+                  placeholder="Share updates or feedback with the user..."
+                />
+              </div>
+
+              <div className="flex gap-4 pt-2">
+                <button
+                  onClick={() => setSelectedRequest(null)}
+                  className="flex-1 py-3 bg-slate-50 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-100 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleFullUpdate}
+                  className="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/20 active:scale-95 flex items-center justify-center gap-2"
+                >
+                  {updating ? <Loader2 className="animate-spin" size={18} /> : <><Save size={18} /> Save Changes</>}
+                </button>
               </div>
             </div>
           </motion.div>
@@ -238,5 +221,9 @@ const RequestManagement = () => {
     </div>
   );
 };
+
+const Tag = ({ size, className }: { size: number, className?: string }) => (
+  <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l4.58-4.58c.94-.94.94-2.48 0-3.42L12 2Z"></path><path d="M7 7h.01"></path></svg>
+);
 
 export default RequestManagement;

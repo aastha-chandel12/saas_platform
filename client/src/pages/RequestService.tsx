@@ -155,9 +155,11 @@ const RequestService = () => {
                   <input
                     type="date"
                     required
+                    min={new Date().toISOString().split('T')[0]}
                     value={formData.deadline}
                     onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
-                    className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-medium text-slate-700"
+                    onClick={(e) => (e.target as any).showPicker?.()}
+                    className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-medium text-slate-700 cursor-pointer"
                   />
                 </div>
               </div>
@@ -174,44 +176,46 @@ const RequestService = () => {
               />
             </div>
 
-            <div className="space-y-3">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Attachments (Resume/Portfolio)</label>
-              <div className="flex flex-col gap-3">
-                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-100 rounded-xl cursor-pointer hover:bg-slate-50 transition-all group">
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <Upload className="w-8 h-8 mb-3 text-slate-300 group-hover:text-indigo-500 transition-colors" />
-                    <p className="mb-2 text-sm text-slate-500 font-bold">Click to upload or drag and drop</p>
-                    <p className="text-xs text-slate-400 font-medium tracking-tight">PDF, DOC, DOCX, PNG, JPG (MAX. 5MB)</p>
-                  </div>
-                  <input type="file" className="hidden" onChange={handleFileUpload} disabled={uploading} />
-                </label>
+            {(formData.serviceType === 'ATS Resume' || formData.serviceType === 'Portfolio Creation') && (
+              <div className="space-y-3">
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Attachments (Resume/Portfolio)</label>
+                <div className="flex flex-col gap-3">
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-100 rounded-xl cursor-pointer hover:bg-slate-50 transition-all group">
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <Upload className="w-8 h-8 mb-3 text-slate-300 group-hover:text-indigo-500 transition-colors" />
+                      <p className="mb-2 text-sm text-slate-500 font-bold">Click to upload or drag and drop</p>
+                      <p className="text-xs text-slate-400 font-medium tracking-tight">PDF, DOC, DOCX, PNG, JPG (MAX. 5MB)</p>
+                    </div>
+                    <input type="file" className="hidden" onChange={handleFileUpload} disabled={uploading} />
+                  </label>
 
-                {attachments.length > 0 && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {attachments.map((file, idx) => (
-                      <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-xl">
-                        <div className="flex items-center gap-2 overflow-hidden">
-                          <Paperclip size={14} className="text-indigo-600 flex-shrink-0" />
-                          <span className="text-xs font-bold text-slate-700 truncate">{file.name}</span>
+                  {attachments.length > 0 && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {attachments.map((file, idx) => (
+                        <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-xl">
+                          <div className="flex items-center gap-2 overflow-hidden">
+                            <Paperclip size={14} className="text-indigo-600 flex-shrink-0" />
+                            <span className="text-xs font-bold text-slate-700 truncate">{file.name}</span>
+                          </div>
+                          <button 
+                            type="button" 
+                            onClick={() => setAttachments(attachments.filter((_, i) => i !== idx))}
+                            className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-white rounded-lg transition-all"
+                          >
+                            <Trash2 size={14} />
+                          </button>
                         </div>
-                        <button 
-                          type="button" 
-                          onClick={() => setAttachments(attachments.filter((_, i) => i !== idx))}
-                          className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-white rounded-lg transition-all"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {uploading && (
-                  <div className="flex items-center gap-2 text-indigo-600 font-bold text-xs animate-pulse">
-                    <Loader2 size={14} className="animate-spin" /> Uploading file...
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  )}
+                  {uploading && (
+                    <div className="flex items-center gap-2 text-indigo-600 font-bold text-xs animate-pulse">
+                      <Loader2 size={14} className="animate-spin" /> Uploading file...
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
             <button
               type="submit"
