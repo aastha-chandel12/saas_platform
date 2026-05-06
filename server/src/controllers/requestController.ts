@@ -86,7 +86,24 @@ const updateRequestStatus = asyncHandler(async (req: any, res: Response) => {
 
   if (request) {
     const oldStatus = request.status;
-    request.status = req.body.status || request.status;
+
+    // Enforce strict one-way transitions
+    if (status && status !== oldStatus) {
+      if (oldStatus === 'Completed') {
+        res.status(400);
+        throw new Error('Completed requests are final and cannot be changed.');
+      }
+      if (oldStatus === 'Requested' && status !== 'In Progress') {
+        res.status(400);
+        throw new Error('Requested status can only move to In Progress.');
+      }
+      if (oldStatus === 'In Progress' && status !== 'Completed') {
+        res.status(400);
+        throw new Error('In Progress status can only move to Completed.');
+      }
+    }
+
+    request.status = status || request.status;
     request.adminNotes = req.body.adminNotes !== undefined ? req.body.adminNotes : request.adminNotes;
 
     const updatedRequest = await request.save();
@@ -94,39 +111,72 @@ const updateRequestStatus = asyncHandler(async (req: any, res: Response) => {
     // Send status update email to user if status changed
     if (oldStatus !== updatedRequest.status) {
       const user: any = request.userId;
+      
+      const getStatusColor = (s: string) => {
+        if (s === 'Completed') return '#10b981'; // Emerald
+        if (s === 'In Progress') return '#f59e0b'; // Amber
+        return '#64748b'; // Slate
+      };
+
       const htmlContent = `
-        <div style="font-family: sans-serif; padding: 24px; border: 1px solid #f1f5f9; border-radius: 16px; max-width: 600px; margin: auto; background-color: #ffffff;">
-          <div style="text-align: center; margin-bottom: 24px;">
-            <div style="display: inline-block; padding: 12px; background-color: #f5f3ff; border-radius: 12px; color: #4f46e5;">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <div style="font-family: 'Inter', system-ui, -apple-system, sans-serif; padding: 40px 20px; background-color: #f8fafc; min-height: 100%;">
+          <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid #f1f5f9;">
+            <!-- Header -->
+            <div style="padding: 32px 32px 24px; text-align: center; border-bottom: 1px solid #f1f5f9;">
+              <div style="display: inline-block; padding: 12px; background-color: #f5f3ff; border-radius: 16px; margin-bottom: 20px;">
+                <img src="https://img.icons8.com/fluency/48/service.png" width="32" height="32" alt="Icon" />
+              </div>
+              <h1 style="color: #0f172a; font-size: 24px; font-weight: 800; margin: 0; letter-spacing: -0.02em;">Ticket Status Updated</h1>
+            </div>
+
+            <!-- Content -->
+            <div style="padding: 32px;">
+              <div style="text-align: center; margin-bottom: 32px;">
+                <p style="color: #64748b; font-size: 16px; margin: 0 0 12px 0;">Hello ${user.name}, your request status is now:</p>
+                <span style="display: inline-block; padding: 8px 20px; background-color: ${getStatusColor(updatedRequest.status)}15; color: ${getStatusColor(updatedRequest.status)}; border: 1.5px solid ${getStatusColor(updatedRequest.status)}30; border-radius: 100px; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em;">
+                  ${updatedRequest.status}
+                </span>
+              </div>
+
+              <div style="background-color: #f8fafc; border: 1px solid #f1f5f9; border-radius: 20px; padding: 24px; margin-bottom: 32px;">
+                <h3 style="color: #94a3b8; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 16px 0;">Request Information</h3>
+                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                   <p style="color: #1e293b; font-size: 16px; font-weight: 700; margin: 0;">${request.serviceType}</p>
+                </div>
+                <p style="color: #64748b; font-size: 13px; margin: 0;">ID: #${request._id.toString().slice(-6).toUpperCase()}</p>
+              </div>
+
+              ${request.adminNotes ? `
+                <div style="margin-bottom: 32px;">
+                  <h3 style="color: #94a3b8; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 12px 0;">Message from Agent</h3>
+                  <div style="background-color: #f1f5f9; border-left: 4px solid #4f46e5; border-radius: 8px 16px 16px 8px; padding: 16px 20px; color: #334155; font-size: 15px; line-height: 1.6; font-style: italic;">
+                    "${request.adminNotes}"
+                  </div>
+                </div>
+              ` : ''}
+
+              <div style="text-align: center;">
+                <a href="${process.env.FRONTEND_URL}/request/${request._id}" style="display: inline-block; width: 100%; box-sizing: border-box; padding: 16px 32px; background-color: #4f46e5; color: #ffffff; text-decoration: none; border-radius: 16px; font-weight: 700; font-size: 16px; transition: all 0.2s; text-align: center; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);">
+                  View Full Progress
+                </a>
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <div style="padding: 32px; background-color: #f8fafc; border-top: 1px solid #f1f5f9; text-align: center;">
+              <p style="color: #94a3b8; font-size: 12px; margin: 0; line-height: 1.5;">
+                This is an automated message from your Service Portal. <br/>
+                Please do not reply directly to this email.
+              </p>
             </div>
           </div>
-          <h2 style="color: #1e293b; margin-bottom: 8px; text-align: center;">Status Update: ${updatedRequest.status}</h2>
-          <p style="color: #64748b; font-size: 16px; text-align: center; margin-bottom: 32px;">Hello ${user.name}, your service request status has been updated.</p>
-          
-          <div style="background-color: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 24px; border: 1px solid #f1f5f9;">
-            <p style="margin: 0 0 12px 0; font-size: 14px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">Request Details</p>
-            <p style="margin: 0 0 4px 0; font-size: 16px; color: #1e293b; font-weight: 700;">${request.serviceType}</p>
-            <p style="margin: 0; font-size: 14px; color: #64748b;">ID: #${request._id}</p>
-          </div>
-
-          ${request.adminNotes ? `
-            <div style="margin-bottom: 24px;">
-              <p style="margin: 0 0 8px 0; font-size: 14px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">Admin Message</p>
-              <div style="background-color: #f1f5f9; padding: 16px; border-radius: 12px; color: #334155; font-style: italic; line-height: 1.5;">"${request.adminNotes}"</div>
-            </div>
-          ` : ''}
-
-        
-          <hr style="margin: 32px 0; border: 0; border-top: 1px solid #f1f5f9;" />
-          <p style="font-size: 12px; color: #94a3b8; text-align: center;">This is an automated notification from Servicely Platform. Please do not reply to this email.</p>
         </div>
       `;
 
       try {
         await sendEmail({
           to: user.email,
-          subject: `Update on your Request: ${updatedRequest.status}`,
+          subject: `[Status Update] ${updatedRequest.status}: ${request.serviceType}`,
           html: htmlContent
         });
       } catch (err) {

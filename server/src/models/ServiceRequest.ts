@@ -31,8 +31,8 @@ const serviceRequestSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enum: ['Request Submitted', 'Work Started', 'Under Review', 'Completed'],
-      default: 'Request Submitted',
+      enum: ['Requested', 'In Progress', 'Completed'],
+      default: 'Requested',
     },
     priority: {
       type: String,
