@@ -128,10 +128,26 @@ const RequestManagement = () => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center gap-4 border-t lg:border-t-0 pt-4 lg:pt-0">
-                  <StatusDropdown 
-                    currentStatus={request.status === 'Request Submitted' ? 'Requested' : (['Work Started', 'Under Review'].includes(request.status) ? 'In Progress' : request.status)} 
-                    onStatusChange={(status) => handleUpdateStatus(request._id, status)} 
-                  />
+                  {request.status === 'Completed' ? (
+                    <div className="w-full sm:w-48 px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 text-sm font-bold text-center flex items-center justify-center gap-2">
+                      <CheckCircle2 size={16} /> Completed
+                    </div>
+                  ) : request.status === 'In Progress' ? (
+                    <button
+                      onClick={() => handleUpdateStatus(request._id, 'Completed')}
+                      className="w-full sm:w-48 px-4 py-2 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100/50 active:scale-95 flex items-center justify-center gap-2"
+                    >
+                      <Save size={16} /> Mark Completed
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleUpdateStatus(request._id, 'In Progress')}
+                      className="w-full sm:w-48 px-4 py-2 bg-amber-500 text-white rounded-xl font-bold text-sm hover:bg-amber-600 transition-all shadow-lg shadow-amber-100/50 active:scale-95 flex items-center justify-center gap-2"
+                    >
+                      <Loader2 size={16} /> Start Work
+                    </button>
+                  )}
+                  
                   <button
                     onClick={() => { 
                       setSelectedRequest(request); 

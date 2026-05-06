@@ -19,6 +19,14 @@ const StatusDropdown: React.FC<StatusDropdownProps> = ({ currentStatus, onStatus
     }
   };
 
+  const isAllowed = (targetStatus: string) => {
+    if (targetStatus === currentStatus) return true;
+    if (currentStatus === 'Requested') return targetStatus === 'In Progress';
+    if (currentStatus === 'In Progress') return targetStatus === 'Requested' || targetStatus === 'Completed';
+    if (currentStatus === 'Completed') return targetStatus === 'In Progress';
+    return false;
+  };
+
   return (
     <div className="relative inline-block w-full sm:w-48">
       <select
@@ -28,7 +36,12 @@ const StatusDropdown: React.FC<StatusDropdownProps> = ({ currentStatus, onStatus
         className={`w-full appearance-none px-4 py-2 rounded-xl border text-sm font-bold cursor-pointer transition-all outline-none focus:ring-2 focus:ring-indigo-500/20 ${getStatusColor(currentStatus)}`}
       >
         {statuses.map((status) => (
-          <option key={status} value={status} className="bg-white text-slate-800">
+          <option 
+            key={status} 
+            value={status} 
+            disabled={!isAllowed(status)}
+            className={`${!isAllowed(status) ? 'text-slate-300' : 'text-slate-800'} bg-white`}
+          >
             {status}
           </option>
         ))}
