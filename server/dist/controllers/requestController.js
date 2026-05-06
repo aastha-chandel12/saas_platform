@@ -5,18 +5,18 @@ import sendEmail from '../utils/sendEmail.js';
 // @route   POST /api/requests
 // @access  Private
 const createServiceRequest = asyncHandler(async (req, res) => {
-    const { serviceType, description, deadline, attachments } = req.body;
-    const request = await ServiceRequest.create({
-        userId: req.user._id,
-        serviceType,
-        description,
-        deadline,
-        attachments
-    });
-    if (request) {
-        // Send Email Notification
-        const adminEmails = process.env.ADMIN_EMAILS?.split(',') || [];
-        const htmlContent = `
+  const { serviceType, description, deadline, attachments } = req.body;
+  const request = await ServiceRequest.create({
+    userId: req.user._id,
+    serviceType,
+    description,
+    deadline,
+    attachments
+  });
+  if (request) {
+    // Send Email Notification
+    const adminEmails = process.env.ADMIN_EMAILS?.split(',') || [];
+    const htmlContent = `
       <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
         <h2 style="color: #4f46e5;">New Service Request Submitted</h2>
         <p><strong>User:</strong> ${req.user.name} (${req.user.email})</p>
@@ -28,54 +28,54 @@ const createServiceRequest = asyncHandler(async (req, res) => {
         <p style="font-size: 12px; color: #6b7280;">This is an automated notification from Servicely Platform.</p>
       </div>
     `;
-        try {
-            await sendEmail({
-                to: adminEmails,
-                from: req.user.email,
-                replyTo: req.user.email,
-                subject: `New Request: ${serviceType}`,
-                html: htmlContent
-            });
-        }
-        catch (err) {
-            console.error('Notification email failed to send');
-            // We don't throw error here to avoid failing the whole request creation
-        }
-        res.status(201).json(request);
+    try {
+      await sendEmail({
+        to: adminEmails,
+        from: req.user.email,
+        replyTo: req.user.email,
+        subject: `New Request: ${serviceType}`,
+        html: htmlContent
+      });
     }
-    else {
-        res.status(400);
-        throw new Error('Invalid request data');
+    catch (err) {
+      console.error('Notification email failed to send');
+      // We don't throw error here to avoid failing the whole request creation
     }
+    res.status(201).json(request);
+  }
+  else {
+    res.status(400);
+    throw new Error('Invalid request data');
+  }
 });
 // @desc    Get user service requests
 // @route   GET /api/requests
 // @access  Private
 const getMyRequests = asyncHandler(async (req, res) => {
-    const requests = await ServiceRequest.find({ userId: req.user._id });
-    res.json(requests);
+  const requests = await ServiceRequest.find({ userId: req.user._id });
+  res.json(requests);
 });
 // @desc    Get all service requests (Admin only)
 // @route   GET /api/requests/all
 // @access  Private/Admin
 const getAllRequests = asyncHandler(async (req, res) => {
-    const requests = await ServiceRequest.find({}).populate('userId', 'name email');
-    res.json(requests);
+  const requests = await ServiceRequest.find({}).populate('userId', 'name email');
+  res.json(requests);
 });
 // @desc    Update service request (Admin only)
 // @route   PUT /api/requests/:id
 // @access  Private/Admin
 const updateRequestStatus = asyncHandler(async (req, res) => {
-    const request = await ServiceRequest.findById(req.params.id).populate('userId', 'name email');
-    if (request) {
-        const oldStatus = request.status;
-        request.status = req.body.status || request.status;
-        request.adminNotes = req.body.adminNotes !== undefined ? req.body.adminNotes : request.adminNotes;
-        const updatedRequest = await request.save();
-        // Send status update email to user if status changed
-        if (oldStatus !== updatedRequest.status) {
-            const user = request.userId;
-            const htmlContent = `
+  const request = await ServiceRequest.findById(req.params.id).populate('userId', 'name email');
+  if (request) {
+    const oldStatus = request.status;
+    request.status = req.body.status || request.status;
+    request.adminNotes = req.body.adminNotes !== undefined ? req.body.adminNotes : request.adminNotes;
+    const updatedRequest = await request.save();
+    // Send status update email to user if status changed
+    if (oldStatus !== updatedRequest.status) {
+      const user = request.userId;
+      const htmlContent = `
         <div style="font-family: sans-serif; padding: 24px; border: 1px solid #f1f5f9; border-radius: 16px; max-width: 600px; margin: auto; background-color: #ffffff;">
           <div style="text-align: center; margin-bottom: 24px;">
             <div style="display: inline-block; padding: 12px; background-color: #f5f3ff; border-radius: 12px; color: #4f46e5;">
@@ -98,30 +98,28 @@ const updateRequestStatus = asyncHandler(async (req, res) => {
             </div>
           ` : ''}
 
-          <div style="text-align: center; margin-top: 32px;">
-            <a href="${process.env.FRONTEND_URL}/request/${request._id}" style="display: inline-block; padding: 12px 24px; background-color: #4f46e5; color: #ffffff; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.1), 0 2px 4px -1px rgba(79, 70, 229, 0.06);">View Request Progress</a>
-          </div>
+        
           
           <hr style="margin: 32px 0; border: 0; border-top: 1px solid #f1f5f9;" />
           <p style="font-size: 12px; color: #94a3b8; text-align: center;">This is an automated notification from Servicely Platform. Please do not reply to this email.</p>
         </div>
       `;
-            try {
-                await sendEmail({
-                    to: user.email,
-                    subject: `Update on your Request: ${updatedRequest.status}`,
-                    html: htmlContent
-                });
-            }
-            catch (err) {
-                console.error('Status update email failed to send');
-            }
-        }
-        res.json(updatedRequest);
+      try {
+        await sendEmail({
+          to: user.email,
+          subject: `Update on your Request: ${updatedRequest.status}`,
+          html: htmlContent
+        });
+      }
+      catch (err) {
+        console.error('Status update email failed to send');
+      }
     }
-    else {
-        res.status(404);
-        throw new Error('Request not found');
-    }
+    res.json(updatedRequest);
+  }
+  else {
+    res.status(404);
+    throw new Error('Request not found');
+  }
 });
 export { createServiceRequest, getMyRequests, getAllRequests, updateRequestStatus };

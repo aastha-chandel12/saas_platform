@@ -73,13 +73,22 @@ const getAllRequests = asyncHandler(async (req: Request, res: Response) => {
 // @route   PUT /api/requests/:id
 // @access  Private/Admin
 const updateRequestStatus = asyncHandler(async (req: any, res: Response) => {
+  const { status, adminNotes } = req.body;
+
+  // Validate status
+  const allowedStatuses = ['Requested', 'In Progress', 'Completed'];
+  if (status && !allowedStatuses.includes(status)) {
+    res.status(400);
+    throw new Error('Invalid status. Must be Requested, In Progress, or Completed.');
+  }
+
   const request = await ServiceRequest.findById(req.params.id).populate('userId', 'name email');
 
   if (request) {
     const oldStatus = request.status;
     request.status = req.body.status || request.status;
     request.adminNotes = req.body.adminNotes !== undefined ? req.body.adminNotes : request.adminNotes;
-    
+
     const updatedRequest = await request.save();
 
     // Send status update email to user if status changed
@@ -108,10 +117,7 @@ const updateRequestStatus = asyncHandler(async (req: any, res: Response) => {
             </div>
           ` : ''}
 
-          <div style="text-align: center; margin-top: 32px;">
-            <a href="${process.env.FRONTEND_URL}/request/${request._id}" style="display: inline-block; padding: 12px 24px; background-color: #4f46e5; color: #ffffff; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.1), 0 2px 4px -1px rgba(79, 70, 229, 0.06);">View Request Progress</a>
-          </div>
-          
+        
           <hr style="margin: 32px 0; border: 0; border-top: 1px solid #f1f5f9;" />
           <p style="font-size: 12px; color: #94a3b8; text-align: center;">This is an automated notification from Servicely Platform. Please do not reply to this email.</p>
         </div>
