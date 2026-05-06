@@ -40,7 +40,10 @@ const AdminDashboard = () => {
         const users = usersRes.data;
 
         const completed = requests.filter((r: any) => r.status === 'Completed').length;
-        const successRate = requests.length ? Math.round((completed / requests.length) * 100) : 0;
+        const requested = requests.filter((r: any) => r.status === 'Requested' || r.status === 'Request Submitted').length;
+        
+        // Operational Health: % of tickets that are NOT in 'Requested' state
+        const operationalHealth = requests.length ? Math.round(((requests.length - requested) / requests.length) * 100) : 100;
 
         // Calculate popular services
         const serviceCounts = requests.reduce((acc: any, r: any) => {
@@ -62,7 +65,7 @@ const AdminDashboard = () => {
           totalRequests: requests.length,
           pendingRequests: requests.filter((r: any) => r.status !== 'Completed').length,
           completedRequests: completed,
-          successRate,
+          successRate: operationalHealth, // Using successRate field for health %
           recentRequests: [...requests].sort((a: any, b: any) => {
             const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
             const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
@@ -91,7 +94,7 @@ const AdminDashboard = () => {
             <StatCard label="Total Requests" value={stats.totalRequests.toString()} icon={<MessageSquare size={20} />} trend="Global" color="indigo" />
             <StatCard label="Active Users" value={stats.totalUsers.toString()} icon={<Users size={20} />} trend="Verified" color="emerald" />
             <StatCard label="Active Tickets" value={stats.pendingRequests.toString()} icon={<Clock size={20} />} trend="In Queue" color="amber" />
-            <StatCard label="Success Rate" value={`${stats.successRate}%`} icon={<Activity size={20} />} trend="Avg" color="rose" />
+            <StatCard label="Operational Health" value={`${stats.successRate}%`} icon={<Activity size={20} />} trend="Optimal" color="rose" />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
