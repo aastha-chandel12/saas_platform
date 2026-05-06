@@ -86,8 +86,8 @@ const RequestManagement = () => {
             </div>
             <div className="relative w-full md:w-72">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
-              <input 
-                type="text" 
+              <input
+                type="text"
                 placeholder="Search across all fields..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -149,8 +149,8 @@ const RequestManagement = () => {
                       </button>
                     )}
                   </div>
-                  
-                  <button
+
+                  {/* <button
                     onClick={() => { 
                       setSelectedRequest(request); 
                       setNotes(request.adminNotes || ''); 
@@ -159,7 +159,7 @@ const RequestManagement = () => {
                     title="Audit Logs"
                   >
                     <ExternalLink size={16} />
-                  </button>
+                  </button> */}
                 </div>
               </motion.div>
             ))}
