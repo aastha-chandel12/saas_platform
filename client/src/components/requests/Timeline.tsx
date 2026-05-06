@@ -1,23 +1,18 @@
 import React from 'react';
-import { CheckCircle2, Circle } from 'lucide-react';
+import { CheckCircle2, Circle, Clock, Send, ShieldCheck, Flag } from 'lucide-react';
 
 interface TimelineProps {
   status: string;
 }
 
 const steps = [
-  { title: 'Request Submitted', description: 'Your request has been received.' },
-  { title: 'Work Started', description: 'Our team has begun working on your service.' },
-  { title: 'Under Review', description: 'The work is being reviewed for quality.' },
-  { title: 'Completed', description: 'Your service request is finished.' },
+  { title: 'Initialization', description: 'Request received and queued for processing.', icon: <Send size={14} /> },
+  { title: 'Provisioning', description: 'Technical resources assigned and work in progress.', icon: <Clock size={14} /> },
+  { title: 'Verification', description: 'Quality assurance and deployment validation.', icon: <ShieldCheck size={14} /> },
+  { title: 'Finalized', description: 'Operational handover complete.', icon: <Flag size={14} /> },
 ];
 
 const Timeline: React.FC<TimelineProps> = ({ status }) => {
-  // Mapping logic:
-  // IF Requested: Step 1 completed
-  // IF In Progress: Step 1 + Step 2 completed
-  // IF Completed: All steps completed
-  
   const getCompletionStatus = (idx: number) => {
     if (status === 'Completed') return true;
     if (status === 'In Progress' && idx <= 1) return true;
@@ -26,38 +21,40 @@ const Timeline: React.FC<TimelineProps> = ({ status }) => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10 relative">
       {steps.map((step, idx) => {
         const isCompleted = getCompletionStatus(idx);
+        const isCurrent = (status === 'In Progress' && idx === 1) || (status === 'Requested' && idx === 0);
         const isLast = idx === steps.length - 1;
 
         return (
-          <div key={idx} className="relative flex gap-4">
+          <div key={idx} className="relative flex gap-5">
             {!isLast && (
               <div 
-                className={`absolute left-4 top-8 w-0.5 h-full -translate-x-1/2 ${
-                  isCompleted && getCompletionStatus(idx + 1) ? 'bg-green-500' : 'bg-slate-100'
+                className={`absolute left-[13px] top-[30px] w-[2px] h-[calc(100%+40px)] ${
+                  isCompleted && getCompletionStatus(idx + 1) ? 'bg-slate-900' : 'bg-slate-100'
                 }`}
               />
             )}
             
             <div className="relative z-10">
-              {isCompleted ? (
-                <div className="bg-white rounded-full">
-                  <CheckCircle2 className="text-green-500 bg-white rounded-full" size={32} />
-                </div>
-              ) : (
-                <div className="w-8 h-8 rounded-full border-2 border-slate-200 bg-white flex items-center justify-center">
-                  <div className="w-2 h-2 rounded-full bg-slate-200" />
-                </div>
-              )}
+              <div className={`w-[28px] h-[28px] rounded-lg border-2 flex items-center justify-center transition-all shadow-sm ${
+                isCompleted 
+                  ? 'bg-slate-900 border-slate-900 text-white' 
+                  : isCurrent 
+                    ? 'bg-white border-slate-900 text-slate-900 animate-pulse'
+                    : 'bg-white border-slate-100 text-slate-200'
+              }`}>
+                {isCompleted ? <CheckCircle2 size={14} strokeWidth={3} /> : step.icon}
+              </div>
             </div>
 
-            <div className="flex flex-col pt-1">
-              <h3 className={`text-sm font-bold uppercase tracking-wider ${isCompleted ? 'text-slate-800' : 'text-slate-400'}`}>
+            <div className="flex flex-col">
+              <h3 className={`text-[11px] font-black uppercase tracking-[0.15em] ${isCompleted || isCurrent ? 'text-slate-900' : 'text-slate-400'}`}>
                 {step.title}
+                {isCurrent && <span className="ml-2 text-[9px] text-indigo-500 font-black animate-pulse">• LIVE</span>}
               </h3>
-              <p className="text-xs text-slate-500 mt-1 font-medium leading-relaxed">
+              <p className="text-[12px] text-slate-500 mt-1.5 font-medium leading-relaxed max-w-sm">
                 {step.description}
               </p>
             </div>

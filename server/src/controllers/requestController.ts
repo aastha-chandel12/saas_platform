@@ -17,8 +17,8 @@ const createServiceRequest = asyncHandler(async (req: any, res: Response) => {
     attachments
   });
 
-  if (request) {
-    // Send Email Notification
+    if (request) {
+    // Send Email Notification in the background
     const adminEmails = process.env.ADMIN_EMAILS?.split(',') || [];
     const htmlContent = `
       <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
@@ -33,18 +33,14 @@ const createServiceRequest = asyncHandler(async (req: any, res: Response) => {
       </div>
     `;
 
-    try {
-      await sendEmail({
-        to: adminEmails,
-        from: req.user.email,
-        replyTo: req.user.email,
-        subject: `New Request: ${serviceType}`,
-        html: htmlContent
-      });
-    } catch (err) {
-      console.error('Notification email failed to send');
-      // We don't throw error here to avoid failing the whole request creation
-    }
+    // Fire and forget (Background)
+    sendEmail({
+      to: adminEmails,
+      from: req.user.email,
+      replyTo: req.user.email,
+      subject: `New Request: ${serviceType}`,
+      html: htmlContent
+    }).catch(err => console.error('Background Admin Notification failed:', err.message));
 
     res.status(201).json(request);
   } else {
@@ -173,15 +169,12 @@ const updateRequestStatus = asyncHandler(async (req: any, res: Response) => {
         </div>
       `;
 
-      try {
-        await sendEmail({
-          to: user.email,
-          subject: `[Status Update] ${updatedRequest.status}: ${request.serviceType}`,
-          html: htmlContent
-        });
-      } catch (err) {
-        console.error('Status update email failed to send');
-      }
+      // Fire and forget (Background)
+      sendEmail({
+        to: user.email,
+        subject: `[Status Update] ${updatedRequest.status}: ${request.serviceType}`,
+        html: htmlContent
+      }).catch(err => console.error('Background User Notification failed:', err.message));
     }
 
     res.json(updatedRequest);

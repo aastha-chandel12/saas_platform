@@ -55,22 +55,22 @@ function App() {
             <Route path="/admin/users" element={<AdminRoute><UserManagement /></AdminRoute>} />
             <Route path="/admin/feedback" element={<AdminRoute><FeedbackManagement /></AdminRoute>} />
 
-            {/* Public/User Routes (With Global Navbar) */}
+            {/* Public/User Routes (With Global Navbar & Footer) */}
             <Route path="*" element={
               <>
                 <Navbar />
-                <main className="flex-grow container mx-auto px-4">
+                <main className="flex-grow flex flex-col">
                   <Routes>
-                    <Route path="/" element={<Home />} />
+                    <Route path="/" element={<div className="container mx-auto px-4"><Home /></div>} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
-                    <Route path="/services" element={<Services />} />
+                    <Route path="/services" element={<div className="container mx-auto px-4"><Services /></div>} />
                     
                     <Route
                       path="/dashboard"
                       element={
                         <ProtectedRoute>
-                          <Dashboard />
+                          <div className="container mx-auto px-4"><Dashboard /></div>
                         </ProtectedRoute>
                       }
                     />
