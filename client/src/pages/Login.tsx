@@ -35,7 +35,7 @@ const Login = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-88px)] flex bg-white font-sans text-slate-900 overflow-hidden">
+    <div className="min-h-[calc(100vh-88px)] flex bg-white font-sans text-slate-900">
       {/* Left Panel: Brand & Info */}
       <div className="hidden lg:flex w-1/2 bg-slate-950 p-16 flex-col justify-between relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
