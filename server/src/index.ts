@@ -24,10 +24,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://saas-platform-alpha.vercel.app"
-  ],
+  origin: (origin, callback) => {
+    // Allow all origins in development for mobile testing
+    if (!origin || origin.startsWith('http://localhost') || origin.startsWith('http://192.168') || origin.includes('vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 
