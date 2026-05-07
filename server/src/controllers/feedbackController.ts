@@ -35,15 +35,12 @@ const submitFeedback = asyncHandler(async (req: any, res: Response) => {
       </div>
     `;
 
-    try {
-      await sendEmail({
-        to: adminEmails,
-        subject: `New Feedback: ${rating} Star Rating from ${req.user.name}`,
-        html: htmlContent
-      });
-    } catch (err) {
-      console.error('Feedback email failed to send');
-    }
+    // Fire and forget (Background)
+    sendEmail({
+      to: adminEmails,
+      subject: `New Feedback: ${rating} Star Rating from ${req.user.name}`,
+      html: htmlContent
+    }).catch(err => console.error('Background Feedback Notification failed:', err.message));
 
     res.status(201).json(feedback);
   } else {
