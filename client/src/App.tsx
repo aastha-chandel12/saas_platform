@@ -49,86 +49,86 @@ function App() {
     <LoadingProvider>
       <AuthProvider>
         <Router>
-        <ScrollToTop />
+          <ScrollToTop />
 
-        <div className="min-h-screen bg-slate-50/50 flex flex-col font-sans selection:bg-indigo-100 selection:text-indigo-900 transition-colors duration-300">
-          <ToastContainer />
-          <Routes>
-            {/* Admin Routes (No Global Navbar) */}
-            <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-            <Route path="/admin/requests" element={<AdminRoute><RequestManagement /></AdminRoute>} />
-            <Route path="/admin/analytics" element={<AdminRoute><AdminAnalytics /></AdminRoute>} />
-            <Route path="/admin/users" element={<AdminRoute><UserManagement /></AdminRoute>} />
-            <Route path="/admin/feedback" element={<AdminRoute><FeedbackManagement /></AdminRoute>} />
+          <div className="min-h-screen bg-slate-50/50 flex flex-col font-sans selection:bg-indigo-100 selection:text-indigo-900 transition-colors duration-300">
+            <ToastContainer />
+            <Routes>
+              {/* Admin Routes (No Global Navbar) */}
+              <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+              <Route path="/admin/requests" element={<AdminRoute><RequestManagement /></AdminRoute>} />
+              <Route path="/admin/analytics" element={<AdminRoute><AdminAnalytics /></AdminRoute>} />
+              <Route path="/admin/users" element={<AdminRoute><UserManagement /></AdminRoute>} />
+              <Route path="/admin/feedback" element={<AdminRoute><FeedbackManagement /></AdminRoute>} />
 
-            {/* Public/User Routes (With Global Navbar & Footer) */}
-            <Route path="*" element={
-              <>
-                <Navbar />
-                <main className="flex-grow flex flex-col">
-                  <Routes>
-                    <Route path="/" element={<div className="container mx-auto px-4"><Home /></div>} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/signup" element={<Signup />} />
-                    <Route path="/services" element={<div className="container mx-auto px-4"><Services /></div>} />
-                    
-                    <Route
-                      path="/dashboard"
-                      element={
-                        <ProtectedRoute>
-                          <div className="container mx-auto px-4"><Dashboard /></div>
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/my-requests"
-                      element={
-                        <ProtectedRoute>
-                          <MyRequests />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/request-service"
-                      element={
-                        <ProtectedRoute>
-                          <RequestService />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/request/:id"
-                      element={
-                        <ProtectedRoute>
-                          <RequestDetail />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/feedback"
-                      element={
-                        <ProtectedRoute>
-                          <Feedback />
-                        </ProtectedRoute>
-                      }
-                    />
-                  </Routes>
-                </main>
-                <footer className="py-12 border-t border-slate-100 bg-white mt-12">
-                  <div className="container mx-auto px-6 text-center">
-                    <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">
-                      © 2026 Servicely Platform • All Rights Reserved
-                    </p>
-                  </div>
-                </footer>
-              </>
-            } />
-          </Routes>
-        </div>
-      </Router>
-    </AuthProvider>
-  </LoadingProvider>
-);
+              {/* Public/User Routes (With Global Navbar & Footer) */}
+              <Route path="*" element={
+                <>
+                  <Navbar />
+                  <main className="flex-grow flex flex-col">
+                    <Routes>
+                      <Route path="/" element={<div className="container mx-auto px-4"><Home /></div>} />
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/signup" element={<Signup />} />
+                      <Route path="/services" element={<div className="container mx-auto px-4"><Services /></div>} />
+
+                      <Route
+                        path="/dashboard"
+                        element={
+                          <ProtectedRoute>
+                            <div className="container mx-auto px-4"><Dashboard /></div>
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/my-requests"
+                        element={
+                          <ProtectedRoute>
+                            <MyRequests />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/request-service"
+                        element={
+                          <ProtectedRoute>
+                            <RequestService />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/request/:id"
+                        element={
+                          <ProtectedRoute>
+                            <RequestDetail />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/feedback"
+                        element={
+                          <ProtectedRoute>
+                            <Feedback />
+                          </ProtectedRoute>
+                        }
+                      />
+                    </Routes>
+                  </main>
+                  <footer className="py-12 border-t border-slate-100 bg-white mt-12">
+                    <div className="container mx-auto px-6 text-center">
+                      <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">
+                        © 2026 Nextstep Careers • All Rights Reserved
+                      </p>
+                    </div>
+                  </footer>
+                </>
+              } />
+            </Routes>
+          </div>
+        </Router>
+      </AuthProvider>
+    </LoadingProvider>
+  );
 }
 
 export default App;

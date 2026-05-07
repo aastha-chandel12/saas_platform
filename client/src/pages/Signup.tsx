@@ -11,14 +11,14 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
       const { data } = await api.post('/api/users', { name, email, password });
       login(data);
@@ -38,15 +38,15 @@ const Signup = () => {
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
         </div>
-        
+
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-12">
             <div className="w-10 h-10 bg-white rounded flex items-center justify-center text-slate-950 shadow-lg">
               <Layout size={24} strokeWidth={2.5} />
             </div>
-            <span className="text-xl font-bold tracking-tighter text-white uppercase italic">Servicely <span className="not-italic text-slate-500 font-medium">OS</span></span>
+            <span className="text-xl font-bold tracking-tighter text-white uppercase italic">Nextstep Careers <span className="not-italic text-slate-500 font-medium">OS</span></span>
           </div>
-          
+
           <div className="max-w-md">
             <h2 className="text-4xl font-bold text-white tracking-tight leading-tight mb-6">
               Join the future of Operational Intelligence.
@@ -69,7 +69,7 @@ const Signup = () => {
         </div>
 
         <div className="relative z-10 flex items-center gap-6 text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">
-          <span>© 2026 SERVICELY INC.</span>
+          <span>© 2026 Nextstep Careers</span>
           <span className="w-1 h-1 bg-slate-800 rounded-full" />
           <span>V 4.0.2-STABLE</span>
         </div>
@@ -77,7 +77,7 @@ const Signup = () => {
 
       {/* Right Panel: Auth Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-24 bg-white">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           className="w-full max-w-[380px]"
@@ -157,8 +157,8 @@ const Signup = () => {
           </div>
 
           <div className="mt-8 flex items-center gap-2 text-slate-300">
-             <ShieldCheck size={14} />
-             <span className="text-[10px] lg:text-[9px] font-bold uppercase tracking-[0.1em]">SOC2 Type II Compliant Infrastructure</span>
+            <ShieldCheck size={14} />
+            <span className="text-[10px] lg:text-[9px] font-bold uppercase tracking-[0.1em]">SOC2 Type II Compliant Infrastructure</span>
           </div>
         </motion.div>
       </div>

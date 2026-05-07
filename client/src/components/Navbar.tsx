@@ -18,7 +18,7 @@ const Navbar = () => {
           <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white shadow-sm">
             <Layout size={16} strokeWidth={2.5} />
           </div>
-          <span className="text-sm font-black text-slate-900 uppercase tracking-tight">Servicely</span>
+          <span className="text-sm font-black text-slate-900 uppercase tracking-tight">Nextstep Careers</span>
         </Link>
 
         {/* Desktop Nav */}
@@ -88,7 +88,7 @@ const Navbar = () => {
                   <MobileNavLink to="/my-requests" label="My Tickets" active={isActive('/my-requests')} onClick={() => setIsOpen(false)} />
                 </>
               )}
-              
+
               <div className="pt-6 border-t border-slate-100">
                 {user ? (
                   <button onClick={logout} className="flex items-center gap-2 text-rose-600 font-black text-[11px] uppercase tracking-widest">
@@ -110,15 +110,14 @@ const Navbar = () => {
 };
 
 const NavLink = ({ to, label, active }: { to: string, label: string, active: boolean }) => (
-  <Link 
-    to={to} 
-    className={`relative py-1 font-black text-[11px] uppercase tracking-[0.15em] transition-colors ${
-      active ? 'text-slate-900' : 'text-slate-400 hover:text-slate-900'
-    }`}
+  <Link
+    to={to}
+    className={`relative py-1 font-black text-[11px] uppercase tracking-[0.15em] transition-colors ${active ? 'text-slate-900' : 'text-slate-400 hover:text-slate-900'
+      }`}
   >
     {label}
     {active && (
-      <motion.div 
+      <motion.div
         layoutId="activeTab"
         className="absolute -bottom-1 left-0 right-0 h-0.5 bg-slate-900 rounded-full"
       />
@@ -127,8 +126,8 @@ const NavLink = ({ to, label, active }: { to: string, label: string, active: boo
 );
 
 const MobileNavLink = ({ to, label, active, onClick }: { to: string, label: string, active: boolean, onClick: () => void }) => (
-  <Link 
-    to={to} 
+  <Link
+    to={to}
     onClick={onClick}
     className={`text-sm font-black uppercase tracking-widest ${active ? 'text-slate-900' : 'text-slate-400'}`}
   >

@@ -12,7 +12,7 @@ const Home = () => {
       <section className="relative pt-12 md:pt-20 px-4 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center gap-12">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               className="flex-1 space-y-6 text-center md:text-left"
@@ -25,14 +25,14 @@ const Home = () => {
                 Next-Gen Career Solutions
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-800 leading-[1.1] tracking-tight">
-                Unlock Your Professional <br /> 
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Potential with Servicely</span>
+                Unlock Your Professional <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Potential with Nextstep Careers</span>
               </h1>
               <p className="text-lg text-slate-500 font-medium max-w-xl mx-auto md:mx-0 leading-relaxed">
                 Empowering career growth through expert ATS resume building, portfolio creation, and strategic career guidance.
               </p>
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-4">
-                <button 
+                <button
                   onClick={() => navigate('/services')}
                   className="px-8 py-4 bg-indigo-600 text-white rounded-xl font-bold text-lg hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100 flex items-center gap-3 active:scale-95"
                 >
@@ -44,15 +44,15 @@ const Home = () => {
               </div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               className="flex-1 relative"
             >
               <div className="relative z-10 rounded-2xl overflow-hidden shadow-xl border border-slate-100">
-                <img 
-                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800" 
-                  alt="Team working" 
+                <img
+                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800"
+                  alt="Team working"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -71,7 +71,7 @@ const Home = () => {
               <h2 className="text-3xl font-bold text-slate-800">Our Expertise</h2>
               <p className="text-slate-500 font-medium">Specialized solutions tailored to your professional journey.</p>
             </div>
-            <button 
+            <button
               onClick={() => navigate('/services')}
               className="text-indigo-600 font-bold flex items-center gap-2 hover:gap-3 transition-all"
             >
@@ -80,19 +80,19 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <FeatureCard 
+            <FeatureCard
               icon={<Zap className="text-amber-500" />}
               title="ATS Resume"
               desc="Optimized resumes that pass automated screening with flying colors."
               color="amber"
             />
-            <FeatureCard 
+            <FeatureCard
               icon={<Globe className="text-indigo-500" />}
               title="Portfolio Creation"
               desc="Showcase your best work with stunning, responsive personal websites."
               color="indigo"
             />
-            <FeatureCard 
+            <FeatureCard
               icon={<Target className="text-rose-500" />}
               title="Career Guidance"
               desc="1-on-1 mentorship to navigate your path to professional success."

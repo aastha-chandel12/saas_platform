@@ -16,7 +16,7 @@ const AdminSidebar = () => {
         <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white shadow-sm">
           <Layout size={16} strokeWidth={2.5} />
         </div>
-        <span className="text-sm font-extrabold text-slate-900 uppercase tracking-tight">Servicely <span className="text-indigo-600">Admin</span></span>
+        <span className="text-sm font-extrabold text-slate-900 uppercase tracking-tight">Nextstep Careers <span className="text-indigo-600">Admin</span></span>
       </div>
 
       <div className="flex-1 py-6 px-3 space-y-8 overflow-y-auto">
@@ -45,7 +45,7 @@ const AdminSidebar = () => {
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">Status: Active</span>
           </div>
         </div>
-        
+
         <button
           onClick={logout}
           className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-500 hover:text-slate-900 hover:bg-white border border-transparent hover:border-slate-200 rounded-lg transition-all font-bold text-xs"
@@ -95,7 +95,7 @@ const AdminSidebar = () => {
               className="fixed inset-y-0 left-0 w-72 z-[60] lg:hidden"
             >
               <SidebarContent />
-              <button 
+              <button
                 onClick={() => setIsOpen(false)}
                 className="absolute top-4 right-[-48px] p-2 bg-white rounded-lg shadow-lg text-slate-500 lg:hidden"
               >
@@ -113,11 +113,10 @@ const SidebarLink = ({ to, label, icon, active, onClick }: any) => (
   <Link
     to={to}
     onClick={onClick}
-    className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all font-bold text-[13px] ${
-      active 
-        ? 'bg-slate-900 text-white shadow-md shadow-slate-200' 
+    className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all font-bold text-[13px] ${active
+        ? 'bg-slate-900 text-white shadow-md shadow-slate-200'
         : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
-    }`}
+      }`}
   >
     <span className={active ? 'text-indigo-400' : 'text-slate-400 group-hover:text-slate-600'}>{icon}</span>
     {label}
