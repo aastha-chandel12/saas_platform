@@ -20,7 +20,7 @@ import RequestManagement from './pages/admin/RequestManagement';
 import UserManagement from './pages/admin/UserManagement';
 import FeedbackManagement from './pages/admin/FeedbackManagement';
 import AdminAnalytics from './pages/admin/AdminAnalytics';
-import WhatsAppChat from './components/chat/WhatsAppChat';
+
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -50,7 +50,7 @@ function App() {
       <AuthProvider>
         <Router>
         <ScrollToTop />
-        <WhatsAppChat />
+
         <div className="min-h-screen bg-slate-50/50 flex flex-col font-sans selection:bg-indigo-100 selection:text-indigo-900 transition-colors duration-300">
           <ToastContainer />
           <Routes>
