@@ -25,7 +25,7 @@ const createServiceRequest = asyncHandler(async (req, res) => {
         <p><strong>Description:</strong></p>
         <div style="background: #f9fafb; padding: 15px; border-radius: 8px;">${description}</div>
         <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;" />
-        <p style="font-size: 12px; color: #6b7280;">This is an automated notification from Servicely Platform.</p>
+        <p style="font-size: 12px; color: #6b7280;">This is an automated notification from Nextstep Careers.</p>
       </div>
     `;
     try {
@@ -101,7 +101,7 @@ const updateRequestStatus = asyncHandler(async (req, res) => {
         
           
           <hr style="margin: 32px 0; border: 0; border-top: 1px solid #f1f5f9;" />
-          <p style="font-size: 12px; color: #94a3b8; text-align: center;">This is an automated notification from Servicely Platform. Please do not reply to this email.</p>
+          <p style="font-size: 12px; color: #94a3b8; text-align: center;">This is an automated notification from Nextstep Careers. Please do not reply to this email.</p>
         </div>
       `;
       try {

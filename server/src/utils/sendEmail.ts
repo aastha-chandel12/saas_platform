@@ -21,7 +21,7 @@ const sendEmail = async (options: EmailOptions) => {
   });
 
   const mailOptions = {
-    from: options.from || `"Servicely Platform" <${process.env.EMAIL_USER}>`,
+    from: options.from || `"Nextstep Careers" <${process.env.EMAIL_USER}>`,
     to: options.to,
     replyTo: options.replyTo || options.from,
     subject: options.subject,

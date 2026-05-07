@@ -31,7 +31,7 @@ const submitFeedback = asyncHandler(async (req: any, res: Response) => {
         <p><strong>Message:</strong></p>
         <div style="background: #f0fdf4; padding: 15px; border-radius: 8px;">${message}</div>
         <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;" />
-        <p style="font-size: 12px; color: #6b7280;">This is an automated notification from Servicely Platform.</p>
+        <p style="font-size: 12px; color: #6b7280;">This is an automated notification from Nextstep Careers.</p>
       </div>
     `;
 

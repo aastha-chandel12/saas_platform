@@ -17,7 +17,7 @@ const createServiceRequest = asyncHandler(async (req: any, res: Response) => {
     attachments
   });
 
-    if (request) {
+  if (request) {
     // Send Email Notification in the background
     const adminEmails = process.env.ADMIN_EMAILS?.split(',') || [];
     console.log('--- EMAIL AUDIT ---');
@@ -32,7 +32,7 @@ const createServiceRequest = asyncHandler(async (req: any, res: Response) => {
         <p><strong>Description:</strong></p>
         <div style="background: #f9fafb; padding: 15px; border-radius: 8px;">${description}</div>
         <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;" />
-        <p style="font-size: 12px; color: #6b7280;">This is an automated notification from Servicely Platform.</p>
+        <p style="font-size: 12px; color: #6b7280;">This is an automated notification from Nextstep Careers.</p>
       </div>
     `;
 
@@ -110,7 +110,7 @@ const updateRequestStatus = asyncHandler(async (req: any, res: Response) => {
     // Send status update email to user if status changed
     if (oldStatus !== updatedRequest.status) {
       const user: any = request.userId;
-      
+
       const getStatusColor = (s: string) => {
         if (s === 'Completed') return '#10b981'; // Emerald
         if (s === 'In Progress') return '#f59e0b'; // Amber
