@@ -20,6 +20,9 @@ const createServiceRequest = asyncHandler(async (req: any, res: Response) => {
     if (request) {
     // Send Email Notification in the background
     const adminEmails = process.env.ADMIN_EMAILS?.split(',') || [];
+    console.log('--- EMAIL AUDIT ---');
+    console.log('Target Admin Emails:', adminEmails);
+    console.log('-------------------');
     const htmlContent = `
       <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
         <h2 style="color: #4f46e5;">New Service Request Submitted</h2>
