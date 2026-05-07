@@ -34,7 +34,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
-  if (loading) return <div>Loading...</div>;
+  if (loading) return (
+    <div className="flex h-screen w-full items-center justify-center bg-slate-50">
+      <div className="h-12 w-12 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent"></div>
+    </div>
+  );
   if (!user || user.role !== 'admin') return <Navigate to="/dashboard" />;
   return <>{children}</>;
 };
