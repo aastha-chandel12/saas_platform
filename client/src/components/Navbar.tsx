@@ -38,8 +38,8 @@ const Navbar = () => {
             {user ? (
               <div className="flex items-center gap-4">
                 <div className="text-right">
-                  <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Authenticated</div>
-                  <div className="text-[11px] font-black text-slate-900 leading-none">{user.name}</div>
+                  <div className="text-xs lg:text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Authenticated</div>
+                  <div className="text-xs lg:text-[11px] font-black text-slate-900 leading-none">{user.name}</div>
                 </div>
                 <button
                   onClick={logout}

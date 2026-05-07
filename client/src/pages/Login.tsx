@@ -83,13 +83,13 @@ const Login = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Identification</label>
+              <label className="text-xs lg:text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Identification</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
                 <input
                   type="email"
                   required
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-md focus:border-slate-900 outline-none transition-all font-medium text-sm text-slate-700 placeholder:text-slate-300 shadow-sm"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-md focus:border-slate-900 outline-none transition-all font-medium text-base lg:text-sm text-slate-700 placeholder:text-slate-300 shadow-sm"
                   placeholder="Email Address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -99,15 +99,15 @@ const Login = () => {
 
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Passkey</label>
-                <Link to="#" className="text-[10px] font-bold text-slate-400 hover:text-slate-900 transition-colors">FORGOT?</Link>
+                <label className="text-xs lg:text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Passkey</label>
+                <Link to="#" className="text-xs lg:text-[10px] font-bold text-slate-400 hover:text-slate-900 transition-colors">FORGOT?</Link>
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
                 <input
                   type="password"
                   required
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-md focus:border-slate-900 outline-none transition-all font-medium text-sm text-slate-700 placeholder:text-slate-300 shadow-sm"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-md focus:border-slate-900 outline-none transition-all font-medium text-base lg:text-sm text-slate-700 placeholder:text-slate-300 shadow-sm"
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -118,7 +118,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-slate-950 text-white rounded-md font-bold text-xs uppercase tracking-[0.2em] hover:bg-slate-800 transition-all shadow-md flex justify-center items-center gap-2 active:scale-[0.98] disabled:opacity-70 group"
+              className="w-full py-4 lg:py-3 bg-slate-950 text-white rounded-md font-bold text-xs uppercase tracking-[0.2em] hover:bg-slate-800 transition-all shadow-md flex justify-center items-center gap-2 active:scale-[0.98] disabled:opacity-70 group"
             >
               {loading ? <Loader2 className="animate-spin" size={16} /> : (
                 <>
@@ -130,7 +130,7 @@ const Login = () => {
           </form>
 
           <div className="mt-12 pt-8 border-t border-slate-100">
-            <p className="text-[11px] font-medium text-slate-500">
+            <p className="text-xs lg:text-[11px] font-medium text-slate-500">
               New entity?{' '}
               <Link to="/signup" className="text-slate-950 font-bold hover:underline underline-offset-4">
                 Initialize Account
@@ -140,7 +140,7 @@ const Login = () => {
 
           <div className="mt-8 flex items-center gap-2 text-slate-300">
              <ShieldCheck size={14} />
-             <span className="text-[9px] font-bold uppercase tracking-[0.1em]">256-Bit Encrypted Data Channel</span>
+             <span className="text-[10px] lg:text-[9px] font-bold uppercase tracking-[0.1em]">256-Bit Encrypted Data Channel</span>
           </div>
         </motion.div>
       </div>
