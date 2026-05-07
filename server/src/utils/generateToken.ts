@@ -12,6 +12,8 @@ const generateToken = (res: Response, userId: string) => {
     sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
     maxAge: 30 * 24 * 60 * 60 * 1000,
   });
+
+  return token;
 };
 
 export default generateToken;

@@ -9,12 +9,13 @@ const authUser = asyncHandler(async (req: Request, res: Response) => {
   const user = await User.findOne({ email });
 
   if (user && (await (user as any).matchPassword(password))) {
-    generateToken(res, user._id.toString());
+    const token = generateToken(res, user._id.toString());
     res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
+      token, // Send token in body as fail-safe
     });
   } else {
     res.status(401);
@@ -35,12 +36,13 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
   const user = await User.create({ name, email, password });
 
   if (user) {
-    generateToken(res, user._id.toString());
+    const token = generateToken(res, user._id.toString());
     res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
+      token, // Send token in body as fail-safe
     });
   } else {
     res.status(400);
